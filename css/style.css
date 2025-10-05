@@ -1,0 +1,183 @@
+/* === GLOBAL === */
+:root {
+  --bg: #000;
+  --orange: #ff9900;
+  --text-shadow: 0 0 3px #ff9900, 0 0 8px rgba(255,153,0,0.6), 0 0 15px rgba(255,153,0,0.3);
+}
+
+* { box-sizing: border-box; }
+html,body { height: 100%; margin: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--orange);
+  font-family: "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  position: relative;
+}
+
+/* === CRT overlay (líneas horizontales + viñeta) === */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    rgba(255,153,0,0.02) 0px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(255,153,0,0.02) 4px
+  );
+  pointer-events: none;
+  z-index: 20;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center,
+    rgba(255,153,0,0.03) 0%,
+    rgba(0,0,0,0.9) 100%);
+  mix-blend-mode: overlay;
+  z-index: 20;
+}
+
+/* === BOOT / LOGIN SCREEN (centrado) === */
+#boot-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  background: rgba(0,0,0,0.0); /* deja ver CRT overlays */
+}
+
+#boot-box {
+  width: min(760px, 92%);
+  max-width: 760px;
+  padding: 28px;
+  border: 1px solid rgba(255,153,0,0.25);
+  background: rgba(0,0,0,0.82);
+  box-shadow: 0 0 40px rgba(255,153,0,0.06);
+  border-radius: 6px;
+  text-align: center;
+}
+
+#boot-text {
+  white-space: pre-wrap;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  color: var(--orange);
+  text-shadow: var(--text-shadow);
+  margin-bottom: 18px;
+  min-height: 70px;
+  display: inline-block;
+  text-align: left;
+}
+
+/* LOGIN FORM (centrado dentro del boot-box) */
+#login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  margin-top: 8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+#login-form input {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(255,153,0,0.15);
+  color: var(--orange);
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 0 6px rgba(255,153,0,0.03) inset;
+}
+
+#login-form input:focus {
+  box-shadow: 0 0 12px rgba(255,153,0,0.12);
+  border-color: rgba(255,153,0,0.35);
+}
+
+#login-actions { margin-top: 6px; display:flex; justify-content:center; }
+#login-btn {
+  padding: 8px 14px;
+  background: transparent;
+  color: var(--orange);
+  border: 1px solid rgba(255,153,0,0.25);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  border-radius: 4px;
+}
+#login-btn:hover { filter: brightness(1.05); }
+
+.error {
+  color: #ff6666;
+  border: 1px solid rgba(255,102,102,0.08);
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin-top: 6px;
+  font-size: 0.95rem;
+}
+
+/* Helper clases */
+.hidden { display: none; }
+
+/* === TERMINAL === */
+#terminal {
+  position: absolute;
+  inset: 0;
+  padding: 26px;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  line-height: 1.4;
+  font-size: 1.05rem;
+  z-index: 10;
+  text-shadow: var(--text-shadow);
+}
+
+/* CURSOR (solo en el último prompt) */
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  background-color: var(--orange);
+  animation: blink 1s steps(1) infinite;
+  vertical-align: bottom;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  50.1%, 100% { opacity: 0; }
+}
+
+/* Pequeña animación para error de login */
+.shake {
+  animation: shakeX 0.4s;
+}
+@keyframes shakeX {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}

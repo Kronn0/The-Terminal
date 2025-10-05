@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>S.P.L.I.T. Terminal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- === BOOT SCREEN === -->
+  <div id="boot-screen">
+    <div id="boot-box">
+      <pre id="boot-text"></pre> <!-- Texto tipeado -->
+      
+      <!-- Formulario de login oculto inicialmente -->
+      <form id="login-form" class="hidden" autocomplete="off">
+        <input id="username" type="text" placeholder="Usuario" />
+        <input id="password" type="password" placeholder="Contraseña" />
+        <button id="login-btn" type="submit">Entrar</button>
+        <div id="login-error" class="error hidden"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- === TERMINAL === -->
+  <div id="terminal" aria-hidden="true"></div>
+
+  <!-- Sonido de tipeo -->
+  <audio id="type-sound" src="assets/type.mp3" preload="auto"></audio>
+
+  <!-- JS principal -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
