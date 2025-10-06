@@ -48,14 +48,17 @@ let terminalLocked = false;
 export async function initTerminal(user) {  // ← async añadido
   terminalEl = document.getElementById('terminal');
   typeSound = document.getElementById('type-sound');
+
   if (!terminalEl) {
     console.error('terminalEl no encontrado');
     return;
   }
 
-  currentUser = user || 'guest';
+  currentUser = user || 'guest'; // se establece aquí
   currentUserSecurity = 0;
-  fileSystem = getFileSystem();
+
+  // PASAR currentUser al FS
+  fileSystem = getFileSystem(currentUser);
 
   print(`Welcome, ${currentUser}`);
 
@@ -126,7 +129,7 @@ if (key === 'ArrowDown') {
   if (key.length === 1) {
     inputBuffer += key;
     updateLine();
-    playType(typeSound);
+    //playType(typeSound);
   } else if (key === 'Backspace') {
     inputBuffer = inputBuffer.slice(0, -1);
     updateLine();
