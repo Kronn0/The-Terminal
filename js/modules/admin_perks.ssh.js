@@ -9,13 +9,13 @@ export async function run(ctx) {
 
   let running = true;
   while (running) {
-    p('');
-    p('ADMIN PERKS - Menú');
-    p('1. Desplegar permisos de administrador');
-    p('2. Documentación');
-    p('3. Para Fazbear');
+    p();
+    p('================ADMIN PERKS - Menú================');
+    p('1. Aplicar permisos de administrador al usuario');
+    p('2. Documentación de la aplicación');
+    p('3. IMPORTANTE: Para el IT.');
     p('4. Salir');
-    p('');
+    p('===================================================');
     const choice = (await ctx.requestInput('Selecciona 1-4:')).trim();
 
     if (!choice) {

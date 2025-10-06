@@ -27,7 +27,12 @@ export function getFileSystem() {
             "readme.txt": {
               type: "file",
               content: "Archivo de prueba.",
-              security: 0
+              security: 1
+            },
+            "tic_tac_toe.ssh":{
+                type: "exec",
+                module: "./module/tic_tac_toe.ssh",
+                security: 0 
             }
           }
         }

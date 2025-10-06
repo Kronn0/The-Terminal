@@ -17,6 +17,9 @@ let moduleInputResolve = null;     // resolver de la promesa de requestInput
 let currentModulePrefix = null;   // nombre del módulo activo, p.ej. "admin_perks.ssh"
 let currentPromptPrefix = null;   // prefijo usado por newPrompt / updateLine
 
+let commandHistory = [];
+let historyIndex = -1;
+
 
 // =======================
 // Inicializa terminal con usuario
@@ -37,6 +40,7 @@ export function initTerminal(user) {
   newPrompt();
 
   document.addEventListener('keydown', handleKey);
+  window.newPrompt = newPrompt;
 }
 
 // =======================
@@ -47,6 +51,35 @@ async function handleKey(e) {
   e.preventDefault();
 
   const key = e.key;
+  
+  if (key === 'ArrowUp') {
+  e.preventDefault();
+  if (commandHistory.length === 0) return;
+
+  if (historyIndex === -1) historyIndex = commandHistory.length - 1;
+  else if (historyIndex > 0) historyIndex--;
+
+  inputBuffer = commandHistory[historyIndex];
+  updateLine();
+  return;
+}
+
+if (key === 'ArrowDown') {
+  e.preventDefault();
+  if (commandHistory.length === 0) return;
+
+  if (historyIndex !== -1) {
+    historyIndex++;
+    if (historyIndex >= commandHistory.length) {
+      historyIndex = -1;
+      inputBuffer = '';
+    } else {
+      inputBuffer = commandHistory[historyIndex];
+    }
+    updateLine();
+  }
+  return;
+}
 
   if (key === 'Tab') {
     e.preventDefault();
@@ -71,6 +104,10 @@ async function handleKey(e) {
       moduleMode = false;
       resolve(val);
     } else {
+      if (inputBuffer.trim() !== '') {
+  commandHistory.push(inputBuffer.trim());
+  historyIndex = -1; // reset
+}  
       await execute(inputBuffer.trim());
       inputBuffer = '';
       newPrompt();

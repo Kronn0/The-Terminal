@@ -181,3 +181,118 @@ body::after {
   75% { transform: translateX(-4px); }
   100% { transform: translateX(0); }
 }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  color: #ff8800;
+  font-family: monospace;
+}
+
+.game-window {
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid #ff8800;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+.board {
+  display: grid;
+  gap: 4px;
+  margin: 15px auto;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  border: 1px solid #ff8800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cell:hover {
+  background: rgba(255,136,0,0.15);
+}
+.message {
+  margin-bottom: 10px;
+  color: #ffa500;
+  min-height: 24px;
+}
+
+#exitBtn {
+  background: transparent;
+  color: #ff8800;
+  border: 1px solid #ff8800;
+  border-radius: 6px;
+  padding: 5px 15px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+#exitBtn:hover {
+  background: rgba(255,136,0,0.2);
+}
+
+/* === Tic Tac Toe blink (cells + terminal) === */
+#terminal.ttt-blink {
+  filter: hue-rotate(10deg) contrast(1.3) brightness(1.1);
+  transition: filter 0.2s ease-in-out;
+}
+
+/* Extra glow en bordes de celdas */
+.ttt-cell {
+  transition: box-shadow 0.25s, border-color 0.25s;
+}
+
+/* === Glitch effect for terminal reset === */
+#terminal.ttt-glitch {
+  animation: glitch 0.4s steps(2) 6;
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+    opacity: 1;
+  }
+  10% {
+    transform: translate(-3px, -2px);
+  }
+  20% {
+    transform: translate(3px, 2px);
+  }
+  30% {
+    transform: translate(-3px, 2px);
+  }
+  40% {
+    transform: translate(3px, -2px);
+  }
+  50% {
+    transform: translate(-2px, 2px);
+    opacity: 0.8;
+  }
+  60% {
+    transform: translate(2px, -2px);
+  }
+  70% {
+    transform: translate(-2px, -2px);
+  }
+  80% {
+    transform: translate(2px, 2px);
+  }
+  90% {
+    transform: translate(-1px, 1px);
+  }
+  100% {
+    transform: translate(0);
+    opacity: 1;
+  }
+}
