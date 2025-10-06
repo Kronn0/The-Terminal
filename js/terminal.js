@@ -1,11 +1,14 @@
 // terminal.js (versión limpia y moderna)
 import { playType, delay } from './utils.js';
 import { getFileSystem } from './filesystem.js';
+import { helpData } from './data/help.js';
+import * as System from './modules/system.js';
+
 
 let terminalEl, typeSound;
 let currentUser = '';
 let currentUserSecurity = 0;
-let currentPath = ['/','Terminal'];
+let currentPath = ['/'];
 let fileSystem = null;
 
 let inputBuffer = '';
@@ -20,6 +23,18 @@ let currentPromptPrefix = null;   // prefijo usado por newPrompt / updateLine
 let commandHistory = [];
 let historyIndex = -1;
 
+const commandSecurity = {
+  help: 0,
+  ls: 0,
+  cd: 0,
+  pwd: 1,
+  cat: 0,
+  echo: 0,
+  clear: 0,
+  execute: 0, 
+  download: 0 
+};
+
 // terminal.js (parte superior)
 let terminalLocked = false;
 
@@ -27,32 +42,41 @@ let terminalLocked = false;
 // =======================
 // Inicializa terminal con usuario
 // =======================
-export function initTerminal(user) {
+// =======================
+// Inicializa terminal con usuario
+// =======================
+export async function initTerminal(user) {  // ← async añadido
   terminalEl = document.getElementById('terminal');
   typeSound = document.getElementById('type-sound');
   if (!terminalEl) {
     console.error('terminalEl no encontrado');
     return;
   }
-//hello world
+
   currentUser = user || 'guest';
   currentUserSecurity = 0;
   fileSystem = getFileSystem();
 
   print(`Welcome, ${currentUser}`);
+
+  // Ejecuta el módulo del sistema al iniciar
+  await System.runSystem({
+    print,
+    userSecurity: () => currentUserSecurity
+  });
+
   newPrompt();
 
   document.addEventListener('keydown', handleKey);
   window.newPrompt = newPrompt;
 
-  // Bloquear y desbloquear input del usuario
-window.disableTerminalInput = function() {
-  document.removeEventListener('keydown', handleKey);
-};
+  window.disableTerminalInput = function() {
+    document.removeEventListener('keydown', handleKey);
+  };
 
-window.enableTerminalInput = function() {
-  document.addEventListener('keydown', handleKey);
-};
+  window.enableTerminalInput = function() {
+    document.addEventListener('keydown', handleKey);
+  };
 }
 
 // =======================
@@ -136,11 +160,32 @@ async function execute(cmd) {
   const parts = cmd.split(/\s+/);
   const command = parts.shift().toLowerCase();
   const args = parts;
+  
+  if (commandSecurity[command] !== undefined) {
+  const required = commandSecurity[command];
+  if (currentUserSecurity < required) {
+    print(`Permiso denegado: "${command}" requiere nivel de seguridad ${required}`);
+    return;
+  }
+}
+
 
   switch(command) {
-    case 'help':
-      print('Comandos: help, ls, cd, pwd, cat, echo, clear, execute');
-      break;
+
+case 'help': {
+  // Filtrar comandos accesibles según security
+  const availableCommands = Object.keys(commandSecurity)
+    .filter(cmd => currentUserSecurity >= commandSecurity[cmd]);
+
+  for (const cmd of availableCommands) {
+    if (helpData[cmd]) {
+      print(`${cmd} - ${helpData[cmd].desc} (Uso: ${helpData[cmd].usage})`);
+    } else {
+      print(`${cmd} - Sin descripción disponible`);
+    }
+  }
+  break;
+}
 
     case 'clear':
       terminalEl.innerHTML = '';
@@ -150,10 +195,14 @@ async function execute(cmd) {
       print(args.join(' '));
       break;
 
-    case 'pwd':
-      print(getPrompt().replace(' >',''));
-      break;
-
+case 'pwd': {
+  // Construye la ruta completa
+  const fullPath = currentPath.join('/');
+  // Asegura que comience con "/" y no tenga "//"
+  const displayPath = fullPath.startsWith('//') ? fullPath.slice(1) : fullPath;
+  print(displayPath || '/');
+  break;
+}
     case 'ls': {
       const dir = getCurrentDir();
       const names = Object.keys(dir || {});
@@ -196,6 +245,34 @@ async function execute(cmd) {
       await runModule(args[0]);
       break;
 
+      case 'download': {
+  const name = args[0];
+  if (!name) { print('Uso: download <archivo>'); break; }
+
+  const dir = getCurrentDir();
+  const file = dir && dir[name];
+  if (!file) { print(`download: ${name}: No existe o no tienes permiso`); break; }
+
+  if (file.type !== 'Tfile') {
+    print(`download: ${name}: no es un archivo descargable`); 
+    break;
+  }
+
+  // Construye la ruta de assets
+  const url = `./assets/${name}`;
+
+  // Crea enlace temporal para descargar
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  print(`Archivo "${name}" descargado con éxito.`);
+  break;
+}
+
     default:
       print(`Comando "${command}" no reconocido.`);
   }
@@ -211,7 +288,9 @@ function handleAutocomplete() {
 
   if (parts.length === 0) {
     // primera palabra → comando
-    const commands = ['help','ls','cd','pwd','cat','echo','clear','execute'];
+    // Solo mostrar comandos que el usuario puede ejecutar
+    const commands = Object.keys(commandSecurity)
+      .filter(cmd => currentUserSecurity >= commandSecurity[cmd]);
     suggestions = commands.filter(c => c.startsWith(last));
   } else {
     // no primera palabra → archivos/directorios actuales
@@ -231,6 +310,7 @@ function handleAutocomplete() {
     updateLine();
   }
 }
+
 
 // =======================
 // Ejecutables / módulos

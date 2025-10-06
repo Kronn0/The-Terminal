@@ -310,3 +310,41 @@ body::after {
   color: var(--orange); /* Mantener el naranja para el usuario */
   text-shadow: var(--text-shadow);
 }
+
+.sys-label {
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+/* ================================
+   ESTILO DEL SCROLL EN LA TERMINAL
+   ================================ */
+#terminal {
+  scrollbar-width: thin;                /* Firefox */
+  scrollbar-color: #ffcc00 #1a1a1a;     /* thumb color | track color */
+}
+
+/* Chrome, Edge, Safari */
+#terminal::-webkit-scrollbar {
+  width: 8px;
+}
+
+#terminal::-webkit-scrollbar-track {
+  background: #0d0d0d;                  /* color de fondo del track */
+  border-radius: 4px;
+}
+
+#terminal::-webkit-scrollbar-thumb {
+  background-color: #ffcc00;            /* color principal del scroll */
+  border-radius: 4px;
+  border: 1px solid #000;               /* para contraste retro */
+}
+
+#terminal::-webkit-scrollbar-thumb:hover {
+  background-color: #ffd633;            /* efecto hover */
+}
+
+/* Suaviza el desplazamiento */
+#terminal {
+  scroll-behavior: smooth;
+}
