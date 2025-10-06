@@ -296,3 +296,17 @@ body::after {
     opacity: 1;
   }
 }
+.message-iris {
+  color: #00ff00; /* Verde brillante */
+  text-shadow: 0 0 3px #00ff00, 0 0 8px rgba(0,255,0,0.6), 0 0 15px rgba(0,255,0,0.3);
+}
+
+.message-system {
+  color: #ffff00; /* Amarillo */
+  text-shadow: 0 0 3px #ffff00, 0 0 8px rgba(255,255,0,0.6), 0 0 15px rgba(255,255,0,0.3);
+}
+
+.message-user {
+  color: var(--orange); /* Mantener el naranja para el usuario */
+  text-shadow: var(--text-shadow);
+}

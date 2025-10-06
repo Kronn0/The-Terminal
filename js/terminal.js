@@ -20,6 +20,9 @@ let currentPromptPrefix = null;   // prefijo usado por newPrompt / updateLine
 let commandHistory = [];
 let historyIndex = -1;
 
+// terminal.js (parte superior)
+let terminalLocked = false;
+
 
 // =======================
 // Inicializa terminal con usuario
@@ -41,6 +44,15 @@ export function initTerminal(user) {
 
   document.addEventListener('keydown', handleKey);
   window.newPrompt = newPrompt;
+
+  // Bloquear y desbloquear input del usuario
+window.disableTerminalInput = function() {
+  document.removeEventListener('keydown', handleKey);
+};
+
+window.enableTerminalInput = function() {
+  document.addEventListener('keydown', handleKey);
+};
 }
 
 // =======================
@@ -244,14 +256,14 @@ async function runModule(name) {
       currentModulePrefix = null;
       return;
     }
-
     const ctx = {
       print,
-      getCurrentDirSafe: () => getCurrentDir(),
-      currentPath: () => currentPath.slice(),
-      user: currentUser,
-      userSecurity: () => currentUserSecurity,
-      increaseSecurity: (n = 1) => { currentUserSecurity += n; },
+      newPrompt,   // <-- importante
+      getCurrentDirSafe:()=>getCurrentDir(),
+      currentPath:()=>currentPath.slice(),
+      user:currentUser,
+      userSecurity:()=>currentUserSecurity,
+      increaseSecurity:(n=1)=>{currentUserSecurity+=n;},
       requestInput,
       delay
     };

@@ -17,6 +17,11 @@ export function getFileSystem() {
             type: "exec",
             module: "./modules/admin_perks.js",
             security: 0
+            },
+            "fazbear_intern_chat.ssh":{
+              type: "exec",
+              module: "./modules/fazbear_intern_chat.ssh",
+              security: 0
             }
           }
         },

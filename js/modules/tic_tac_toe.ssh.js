@@ -155,6 +155,7 @@ export async function run(ctx) {
   }
 
   async function onTimeExpired(){
+    disableTerminalInput();
     active=false;
     if(blinkInterval) clearInterval(blinkInterval);
     winEl.style.boxShadow='0 0 40px 8px red';
@@ -166,26 +167,41 @@ export async function run(ctx) {
     try{ overlay.remove(); } catch(e){}
     if(term) term.innerHTML='';
 
-    const bootLines=[
-      'Initializing SPLIT kernel v4.21.0',
-      'Loading modules: [core, net, ui, ai]',
-      'Checking security... FAIL',
-      'Forcing emergency override...',
-      'Mounting virtual filesystem...',
-      'Applying memory patch 0xA1F3C7...',
-      'Decrypting admin keys...',
-      'Spawn background processes: 12',
-      'Initializing terminal subsystems.',
-      'ATTEMPTING HARD RESET',
-      '--- SYSTEM BOOT SEQUENCE ---',
-      'printf: booting...',
-      'sh: injecting startup scripts',
-      'loading user preferences...',
-      'starting diagnostics...',
-      'console: spam-logger started',
-      '>>> entering interactive shell',
-      'login: _'
-    ];
+const bootLines = [
+  "[BOOT] Initializing SPLIT core modules...",
+  "[OK] Mounting /dev/terminal0",
+  "[OK] Loading kernel segment 0xAFFF... done",
+  "[INFO] Checking filesystem integrity... clean",
+  "[BOOT] Linking neural nodes to system bus",
+  "[SYS] Allocating 64MB for I/O stack",
+  "[OK] User-space bridge initialized",
+  "[WARN] Unverified user session detected",
+  "[SYS] Enabling adaptive input control",
+  "[OK] Peripheral check: 3 devices active",
+  "[BOOT] Starting memory diagnostic sequence...",
+  "[MEM] Sector A3F2 verified",
+  "[MEM] Sector B14E verified",
+  "[ERR] Memory sector C002... unstable",
+  "[RECOVER] Reallocating corrupted block... success",
+  "[SYS] Restoring session cache from /tmp",
+  "[OK] 142 cached entries recovered",
+  "[AI] Neural link calibration: 96.3%",
+  "[OK] Temporal sync aligned with system clock",
+  "[SEC] Checking security tokens... OK",
+  "[BOOT] Deploying visual interface layer...",
+  "[OK] Terminal UI online",
+  "[AI] Activating secondary cognitive cores...",
+  "[OK] 4 parallel cores active",
+  "[SYS] Injecting ghost kernel... success",
+  "[WARN] Unauthorized process: tic_tac_toe.ssh",
+  "[SYS] Attempting isolation... failed",
+  "[ALERT] Sandbox breach detected",
+  "[SYS] Rebooting in safe mode...",
+  "[BOOT] Reinitializing SPLIT terminal...",
+  "[OK] Restoring prompt state",
+  "[READY] System stable. Awaiting input...",
+];
+
 
     for(let i=0;i<bootLines.length;i++){
       ctx.print(bootLines[i]);
@@ -196,10 +212,11 @@ export async function run(ctx) {
     // limpieza total + new prompt
    if(term) {
   term.innerHTML = '';  // limpia toda la terminal
-  ctx.print('');        // imprime un "Enter" (salto de línea)
   if(typeof window.newPrompt === 'function') window.newPrompt(); // nuevo prompt listo
 }
     if(term) term.classList.remove('ttt-glitch');
+      enableTerminalInput();
+
   }
 
   renderBoard();
